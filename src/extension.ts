@@ -61,6 +61,7 @@ class ExcalidrawEditorProvider implements vscode.CustomTextEditorProvider, vscod
 	server: http.Server;
 	serverReady: Promise<void>;
 	disposables: vscode.Disposable[] = [];
+	instances: { excalidrawInstance: ExcalidrawInstance, panel: vscode.WebviewPanel}[] = [];
 
 	constructor(private context: vscode.ExtensionContext) {
 		this.server = startServer();
@@ -92,15 +93,18 @@ class ExcalidrawEditorProvider implements vscode.CustomTextEditorProvider, vscod
 		}));
 
 		this.disposables.push(excalidrawInstance.onChange(async (data) => {
-			if (!data) {
+			if (!data || data.newData === document.getText()) {
 				return;
 			}
 
 			const edit = new vscode.WorkspaceEdit();
 			edit.replace(document.uri, new vscode.Range(0, 0, document.lineCount, 0), data.newData);
 			isEditorSaving = true;
-			await vscode.workspace.applyEdit(edit);
-			isEditorSaving = false;
+			try {
+				await vscode.workspace.applyEdit(edit);
+			} finally {
+				isEditorSaving = false;
+			}
 		}));
 
 		this.disposables.push(
@@ -111,6 +115,7 @@ class ExcalidrawEditorProvider implements vscode.CustomTextEditorProvider, vscod
 		webviewPanel.onDidDispose(() => {
 			this.disposables.forEach(d => d.dispose());
 			this.disposables = [];
+			this.instances = this.instances.filter(i => i.excalidrawInstance !== excalidrawInstance);
 		});
 
 		excalidrawInstance.onInit(() => {
@@ -120,12 +125,17 @@ class ExcalidrawEditorProvider implements vscode.CustomTextEditorProvider, vscod
 			initialized = true;
 			excalidrawInstance.loadData(document.getText());
 		});
+		this.instances.push({
+			excalidrawInstance,
+			panel: webviewPanel,
+		});
+	}
 
-		this.context.subscriptions.push(
-			vscode.commands.registerCommand('brijeshb42-excalidraw.deleteshape', async() => {
-				await excalidrawInstance.deleteShape();
-			})
-		);
+	broadcastDelete() {
+		// vscode
+		this.instances.filter(i => i.panel.active).forEach(({ excalidrawInstance }) => {
+			excalidrawInstance.deleteShape();
+		});
 	}
 
 	dispose() {
@@ -135,6 +145,7 @@ class ExcalidrawEditorProvider implements vscode.CustomTextEditorProvider, vscod
 
 		this.disposables.forEach(d => d.dispose());
 		this.disposables = [];
+		this.instances = [];
 	}
 }
 
@@ -147,5 +158,11 @@ export async function activate(context: vscode.ExtensionContext) {
 		provider,
 		{ webviewOptions: { retainContextWhenHidden: true } },
 	));
+	vscode.commands.registerCommand('brijeshb42-excalidraw.deleteshape', async (...args) => {
+		// await excalidrawInstance.deleteShape();
+		console.log(...args);
+		provider.broadcastDelete();
+	});
+	// context.subscriptions.push(vscode.commands.registerCommand)
 	context.subscriptions.push(provider);
 }

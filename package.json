@@ -2,7 +2,7 @@
 	"name": "vscode-excalidraw",
 	"displayName": "Excalidraw integration",
 	"description": "Create and edit excalidraw compatible files in vscode directly.",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"license": "GPL-3.0",
 	"publisher": "brijeshb42",
 	"icon": "icon.png",
