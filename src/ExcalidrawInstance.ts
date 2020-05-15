@@ -12,9 +12,10 @@ export interface ExcalidrawEvent {
 }
 
 export interface ExcalidrawAction {
-    type: 'load' | 'save' | 'deleteShape';
+    type: 'load' | 'save' | 'deleteShape' | 'export';
     data?: string;
     autosave?: 1 | 0;
+    scale?: number,
 }
 
 export class ExcalidrawInstance implements Disposable {
@@ -109,6 +110,16 @@ export class ExcalidrawInstance implements Disposable {
         await this.sendAction({
             type: 'deleteShape',
         }, true);
+    }
+
+    public async exportTo(format: string, scale = 1) {
+        const res = await this.sendAction({
+            type: 'save',
+            data: format,
+            scale,
+        }, true);
+
+        return res.data;
     }
 
     dispose() {

@@ -2,7 +2,7 @@
 	"name": "vscode-excalidraw",
 	"displayName": "Excalidraw integration",
 	"description": "Create and edit excalidraw compatible files in vscode directly.",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"license": "GPL-3.0",
 	"publisher": "brijeshb42",
 	"icon": "icon.png",
@@ -21,6 +21,22 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"menus": {
+			"commandPalette": [{
+				"command": "brijeshb42-excalidraw.export",
+				"when": "resourceExtname == .excalidraw"
+			}, {
+				"command": "brijeshb42-excalidraw.deleteshape",
+				"when": "resourceExtname == .excalidraw"
+			}]
+		},
+		"commands": [{
+			"command": "brijeshb42-excalidraw.deleteshape",
+			"title": "Delete currently selected shape"
+		}, {
+			"command": "brijeshb42-excalidraw.export",
+			"title": "Export file as png/svg"
+		}],
 		"customEditors": [
 			{
 				"viewType": "brijeshb42-excalidraw.texteditor",
