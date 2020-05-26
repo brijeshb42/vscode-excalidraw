@@ -12,3 +12,6 @@ All notable changes to the "vscode-excalidraw" extension will be documented in t
 
 ## [0.0.3]
 - Add ability to export to png/svg
+
+## [0.0.4]
+- Update to latest excalidraw
