@@ -2,7 +2,7 @@
 	"name": "vscode-excalidraw",
 	"displayName": "Excalidraw integration",
 	"description": "Create and edit excalidraw compatible files in vscode directly.",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"license": "GPL-3.0",
 	"publisher": "brijeshb42",
 	"icon": "icon.png",
@@ -58,7 +58,7 @@
 		]
 	},
 	"scripts": {
-		"build:excalidraw": "cd ../excalidraw && npm run build && cp -R build ../vscode-excalidraw/",
+		"build:excalidraw": "cd ../excalidraw && npx react-scripts build && cp -R build ../vscode-excalidraw/",
 		"vscode:prepublish": "yarn run build:excalidraw && yarn run compile",
 		"compile": "tsc -p ./",
 		"lint": "eslint src --ext ts",

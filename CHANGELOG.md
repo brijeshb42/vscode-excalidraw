@@ -15,3 +15,6 @@ All notable changes to the "vscode-excalidraw" extension will be documented in t
 
 ## [0.0.4]
 - Update to latest excalidraw
+
+## [0.0.5]
+- Update to latest excalidraw
