@@ -53,7 +53,7 @@
 			{
 				"command": "brijeshb42-excalidraw.deleteshape",
 				"key": "Delete",
-				"when": "editorIsOpen"
+				"when": "editorIsOpen && !editorReadonly && resourceExtname == .excalidraw"
 			}
 		]
 	},
